@@ -1,6 +1,6 @@
 import time
 import mysql.connector
-db1 = None
+#db1 = None
 def connect():
     global db1
     db1 = mysql.connector.connect(host="localhost",user="root",password="3456",charset="utf8")
@@ -10,8 +10,11 @@ c1 = db1.cursor()
 c1.execute("drop database hotel")
 c1.execute("create database hotel")
 c1.execute("use hotel")
-c1.execute("create table rooms(romm_no integer,type varchar(50),location varchar(30),no_of_guest integer,rent integer, status varchar(20))")
-c1.execute("create table booking(cname varchar(20),idtype varchar(40),idno varchar(40), address varchar(50), phone varchar(10),gender varchar(20), dcheckin date,room_no integer)")
+c1.execute("create table rooms(romm_no integer,type varchar(50),location varchar(30),\
+           no_of_guest integer,rent integer, status varchar(20))")
+c1.execute("create table booking(cname varchar(20),idtype varchar(40),idno varchar(40), \
+           address varchar(50), phone varchar(10),gender varchar(20), dcheckin date,room_no integer)")
+c1.execute("alter table rooms add primary key(romm_no)")
 
 db1.commit()
 
@@ -54,8 +57,10 @@ def showmenu():
         elif choice == 6:
             checkout()
         elif choice == 7:
+            print("Thank you for visiting Hotel Aurelia")
             break
-        
+
+#Function to create rooms rooms
 def createRoom():
     print()
     n = "⋅˚₊‧ ୨୧ ‧₊˚ ⋅ ENTER ROOM DETAILS ⋅˚₊‧ ୨୧ ‧₊˚ ⋅"
@@ -66,15 +71,19 @@ def createRoom():
     time.sleep(.2)
     print("-" * 40)
     time.sleep(.2)
+    cr1 = con.cursor()
     rno = int(input("Enter Room No. : "))
     type = input("Enter Room Type(Simple/Delux/Super Delux):")
+    l = ["Simple","simple","SIMPLE","Delux","delux","DELUX","Super Delux","SUPERDELUX","SUPER DELUX",
+         "SuperDelux","superdelux","super delux"]
+    if type not in l:
+        raise Exception("Not a choice.")
     guest = int(input("Enter maximum number of guests : "))
     loc = input("Enter Location details : ")
     rent = int(input("Enter Per Day Charges : "))
     status = "Vacant"
     q = "insert into rooms values(%s,%s,%s,%s,%s,%s)"
     data = (rno,type,loc,guest,rent,status)
-    cr1 = con.cursor()
     cr1.execute(q,data)
     con.commit()
     n = "⋅˚₊‧ ୨୧ ‧₊˚ ⋅ Room Created Successfully ⋅˚₊‧ ୨୧ ‧₊˚ ⋅"
@@ -83,6 +92,7 @@ def createRoom():
         time.sleep(.1)
     print()
 
+#Function to show all rooms
 def showRooms():
     print()
     q = "select * from rooms"
@@ -92,6 +102,7 @@ def showRooms():
     for row in res:
         print(row)
 
+#Function to show all vacant rooms
 def showVacantRooms():
     print()
     q = "select * from rooms where status='Vacant'"
@@ -101,6 +112,7 @@ def showVacantRooms():
     for row in res:
         print(row)
 
+#Function to show all occupied rooms
 def showOccupiedRooms():
     print()
     print("Displaying the room number, occupant(s) name and their phone numbers")
@@ -111,6 +123,7 @@ def showOccupiedRooms():
     for row in res:
         print(row)
 
+#Function to book a room
 def bookRoom():
     print()
     n = "⋅˚₊‧ ୨୧ ‧₊˚ ⋅ BOOKING A ROOM ⋅˚₊‧ ୨୧ ‧₊˚ ⋅"
@@ -158,4 +171,3 @@ def checkout():
     con.commit()
 if con.is_connected():
     showmenu()
-
