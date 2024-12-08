@@ -3,7 +3,8 @@ import mysql.connector
 #db1 = None
 def connect():
     global db1
-    db1 = mysql.connector.connect(host="localhost",user="root",password="3456",charset="utf8")
+    db1 = mysql.connector.connect(host="localhost",user="root",password="3456",
+                                  charset="utf8")
 
 connect()
 c1 = db1.cursor()
@@ -13,18 +14,21 @@ c1.execute("use hotel")
 c1.execute("create table rooms(romm_no integer,type varchar(50),location varchar(30),\
            no_of_guest integer,rent integer, status varchar(20))")
 c1.execute("create table booking(cname varchar(20),idtype varchar(40),idno varchar(40), \
-           address varchar(50), phone varchar(10),gender varchar(20), dcheckin date,room_no integer)")
+           address varchar(50), phone varchar(10),gender varchar(20), dcheckin date,\
+           room_no integer)")
 c1.execute("alter table rooms add primary key(romm_no)")
 
 db1.commit()
 
 import mysql.connector as mycon
-con = mycon.connect(host="localhost",user="root",password="3456",database="hotel",charset="utf8")
+con = mycon.connect(host="localhost",user="root",password="3456",database="hotel",
+                    charset="utf8")
 
 def showmenu():
     while True:
         print()
-        for n in ("────୨ৎ────" * 3 )+ "\n----    HOTEL AURELIA    ----" + "\n" +("────୨ৎ────" * 3 ) :
+        for n in ("────୨ৎ────" * 3 )+ "\n----    HOTEL AURELIA    ----\
+" + "\n" +("────୨ৎ────" * 3 ) :
             print(n, end = '')
             time.sleep(.007)
         print()
@@ -74,7 +78,8 @@ def createRoom():
     cr1 = con.cursor()
     rno = int(input("Enter Room No. : "))
     type = input("Enter Room Type(Simple/Delux/Super Delux):")
-    l = ["Simple","simple","SIMPLE","Delux","delux","DELUX","Super Delux","SUPERDELUX","SUPER DELUX",
+    l = ["Simple","simple","SIMPLE","Delux","delux","DELUX","Super Delux",
+         "SUPERDELUX","SUPER DELUX",
          "SuperDelux","superdelux","super delux"]
     if type not in l:
         raise Exception("Not a choice.")
@@ -116,7 +121,8 @@ def showVacantRooms():
 def showOccupiedRooms():
     print()
     print("Displaying the room number, occupant(s) name and their phone numbers")
-    q = "select room_no, cname, phone from rooms,booking where status='Occupied' and romm_no = room_no"
+    q = "select room_no, cname, phone from rooms,booking where status='Occupied' \
+and romm_no = room_no"
     cr1 = con.cursor()
     cr1.execute(q)
     res = cr1.fetchall()
@@ -136,7 +142,14 @@ def bookRoom():
     idtype = input("Enter the ID submitted(PAN Card/License/Aadhar Card/Passport) : ")
     idno = input("Enter the ID number : ")
     address = input("Enter Address : ")
-    phone = input("Enter Phone number : ")
+    phone = ''
+    while phone == '':
+        phone = input("Enter Phone number : ")
+        if len(phone)<10 or len(phone)>10:
+            print("Invalid phone number. Try again.")
+            phone=''
+        else:
+            break
     gender = input("Enter Gender : ")
     dcheckin = input("Enter Date of Check in (yyyy-mm-dd) : ")
     room_no = int(input("Enter Room number : "))
@@ -159,7 +172,8 @@ def bookRoom():
 def checkout():
     print()
     room_no = input("Enter the Room Number : ")
-    q = "select room_no, cname, phone from rooms,booking where status='Occupied' and romm_no ="+ room_no
+    q = "select room_no, cname, phone from rooms,booking where status='Occupied' \
+and romm_no ="+ room_no
     cr1 = con.cursor()
     cr1.execute(q)
     res = cr1.fetchall()
@@ -171,3 +185,4 @@ def checkout():
     con.commit()
 if con.is_connected():
     showmenu()
+
